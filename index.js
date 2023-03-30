@@ -1,37 +1,26 @@
 const http = require("http");
 const path = require("path");
-const fs = require("fs/promises");
+const fs = require("fs");
+const express = require("express");
+
+const app = express();
 
 const hostname = "127.0.0.1";
-const port = "3000";
+const port = "8080";
 
-// async function readHtml() {
-//   const filename = "./index.html";
-//   try {
-//     const data = await fs.readFile(filename, "utf-8");
-//     console.log(data);
+const filename = "index.html";
 
-//     // return data;
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
-
-// readHtml();
-
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.write("hello\n");
-
-  async function readHtml() {
-    const html = await fs.readFile("./index.html", "utf-8");
-    res.end(html);
+fs.readFile(filename, (err, data) => {
+  if (err) {
+    throw err;
   }
+  const server = http.createServer((req, res) => {
+    res.writeHead(200, { "Content-Type": "text/html" });
+    res.write(data);
+    res.end();
+  });
 
-  readHtml();
-  //   res.end();
-});
-
-server.listen(port, hostname, () => {
-  console.log(`server listening at ${hostname}:${port}`);
+  server.listen(port, hostname, () => {
+    console.log(`server listening at ${hostname}:${port}`);
+  });
 });
